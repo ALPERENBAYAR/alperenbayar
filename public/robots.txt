@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.alperenbayar.com
+
+# Sitemaps
+Sitemap: https://www.alperenbayar.com/sitemap.xml
