@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-const WEBHOOK_URL = "https://3967283a8b36.ngrok-free.app/webhook/generate-blog";
+const WEBHOOK_URL =
+  "https://5uycus78.rpcld.app/webhook/generate-blog";
 
 export default function SeoBlogPage() {
   const [url, setUrl] = useState("");
@@ -15,47 +16,49 @@ export default function SeoBlogPage() {
   const [result, setResult] = useState("");
 
   async function generate() {
-    const trimmedUrl = url.trim();
-    if (!trimmedUrl) {
-      alert("Lütfen bir URL gir");
+    if (!url.trim()) {
+      setError("Lütfen geçerli bir URL gir");
       return;
     }
 
-    setResult("");
-    setError("");
     setLoading(true);
+    setError("");
+    setResult("");
 
     try {
       const res = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
         },
         body: JSON.stringify({
-          url: trimmedUrl,
+          url: url.trim(),
           language,
-          length,
+          length: Number(length),
           mode,
-          keywords: keywords.trim(),
+          keywords: keywords
+            .split("\n")
+            .map((k) => k.trim())
+            .filter(Boolean),
         }),
       });
 
-      const raw = await res.text();
-      let data: { blog?: string; error?: string };
-      try {
-        data = JSON.parse(raw);
-      } catch {
-        data = { blog: raw };
-      }
+      const text = await res.text();
 
       if (!res.ok) {
-        throw new Error(data.error || "Sunucu hatası");
+        throw new Error(text || "Sunucu hatası");
       }
 
-      setResult(data.blog || raw);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Bilinmeyen hata");
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { blog: text };
+      }
+
+      setResult(data.blog || text);
+    } catch (err: any) {
+      setError(err.message || "Bilinmeyen hata");
     } finally {
       setLoading(false);
     }
@@ -66,45 +69,31 @@ export default function SeoBlogPage() {
       <div className="container">
         <div className="card">
           <h1>🔗 URL → SEO Blog Yazısı</h1>
-          <div className="subtitle">
-            Bir URL gir. Sistem sayfayı analiz etsin, en iyi anahtar kelimeleri
-            çıkarsın ve{" "}
-            <strong>SEO uyumlu, yayınlanabilir blog içeriği</strong> üretsin.
-          </div>
+          <p className="subtitle">
+            Bir URL gir. Sistem sayfayı analiz etsin ve{" "}
+            <strong>SEO uyumlu blog yazısı</strong> üretsin.
+          </p>
 
           <div className="grid">
             <input
-              id="url"
               placeholder="https://www.siten.com/kategori"
               value={url}
-              onChange={(event) => setUrl(event.target.value)}
+              onChange={(e) => setUrl(e.target.value)}
             />
 
             <div className="row">
-              <select
-                id="language"
-                value={language}
-                onChange={(event) => setLanguage(event.target.value)}
-              >
+              <select value={language} onChange={(e) => setLanguage(e.target.value)}>
                 <option value="tr">Türkçe</option>
                 <option value="en">English</option>
               </select>
 
-              <select
-                id="length"
-                value={length}
-                onChange={(event) => setLength(event.target.value)}
-              >
+              <select value={length} onChange={(e) => setLength(e.target.value)}>
                 <option value="500">500 kelime</option>
                 <option value="1000">1000 kelime</option>
                 <option value="1500">1500 kelime</option>
               </select>
 
-              <select
-                id="mode"
-                value={mode}
-                onChange={(event) => setMode(event.target.value)}
-              >
+              <select value={mode} onChange={(e) => setMode(e.target.value)}>
                 <option value="seo">SEO Odaklı</option>
                 <option value="sales">Satış Odaklı</option>
                 <option value="info">Bilgilendirici</option>
@@ -112,37 +101,25 @@ export default function SeoBlogPage() {
             </div>
 
             <textarea
-              id="keywords"
-              placeholder={`Anahtar kelimeler (opsiyonel)
-Örn:
+              placeholder={`Anahtar kelimeler (satır satır)
 kahve fincan takımı
-seramik kahve fincanı
-kahve fincan seti`}
+seramik kahve fincanı`}
               value={keywords}
-              onChange={(event) => setKeywords(event.target.value)}
+              onChange={(e) => setKeywords(e.target.value)}
             />
 
-            <button id="btn" onClick={generate} disabled={loading}>
-              Blog Yazısı Oluştur
+            <button onClick={generate} disabled={loading}>
+              {loading ? "⏳ Üretiliyor..." : "Blog Yazısı Oluştur"}
             </button>
 
-            {loading ? (
-              <div id="loading" className="loading">
-                ⏳ İçerik üretiliyor...
-              </div>
-            ) : null}
+            {error && <div className="error">{error}</div>}
 
-            {error ? (
-              <div id="error" className="error">
-                {error}
-              </div>
-            ) : null}
-
-            <div
-              id="result"
-              className="result"
-              dangerouslySetInnerHTML={{ __html: result }}
-            />
+            {result && (
+              <div
+                className="result"
+                dangerouslySetInnerHTML={{ __html: result }}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -152,123 +129,69 @@ kahve fincan seti`}
           min-height: 100vh;
           background: #0b0f19;
           color: #e5e7eb;
-          font-family: Inter, system-ui, Arial, sans-serif;
           padding: 40px 0;
+          font-family: Inter, system-ui;
         }
-
-        .seo-blog-page .container {
-          max-width: 1000px;
-          margin: 0 auto;
+        .container {
+          max-width: 960px;
+          margin: auto;
           padding: 24px;
         }
-
-        .seo-blog-page .card {
+        .card {
           background: #111827;
-          border-radius: 14px;
-          padding: 26px;
+          border-radius: 16px;
+          padding: 28px;
           border: 1px solid #1f2937;
         }
-
-        .seo-blog-page h1 {
-          margin: 0 0 8px 0;
-          font-size: 28px;
-        }
-
-        .seo-blog-page .subtitle {
+        .subtitle {
           color: #9ca3af;
           margin-bottom: 24px;
-          line-height: 1.5;
         }
-
-        .seo-blog-page input,
-        .seo-blog-page select,
-        .seo-blog-page textarea {
+        input, select, textarea {
           width: 100%;
-          padding: 12px 14px;
+          padding: 12px;
           background: #020617;
           border: 1px solid #1f2937;
           color: #e5e7eb;
           border-radius: 10px;
-          font-size: 15px;
-          box-sizing: border-box;
         }
-
-        .seo-blog-page textarea {
+        textarea {
           min-height: 120px;
-          resize: vertical;
         }
-
-        .seo-blog-page .grid {
+        .grid {
           display: grid;
           gap: 14px;
         }
-
-        .seo-blog-page .row {
+        .row {
           display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
+          grid-template-columns: repeat(3, 1fr);
           gap: 12px;
         }
-
-        .seo-blog-page button {
+        button {
           background: #6366f1;
-          border: none;
-          color: #fff;
           padding: 14px;
-          font-size: 16px;
           border-radius: 12px;
-          cursor: pointer;
-          font-weight: 600;
-        }
-
-        .seo-blog-page button:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        .seo-blog-page .loading {
-          margin-top: 14px;
+          border: none;
           font-weight: 700;
+          cursor: pointer;
+          color: #fff;
         }
-
-        .seo-blog-page .error {
+        button:disabled {
+          opacity: 0.6;
+        }
+        .error {
           color: #f87171;
-          margin-top: 10px;
           font-weight: 600;
         }
-
-        .seo-blog-page .result {
-          margin-top: 28px;
-          padding: 28px;
+        .result {
+          margin-top: 24px;
           background: #020617;
-          border: 1px solid #1f2937;
+          padding: 28px;
           border-radius: 14px;
+          border: 1px solid #1f2937;
         }
-
-        .seo-blog-page .result h1,
-        .seo-blog-page .result h2,
-        .seo-blog-page .result h3 {
-          color: #fff;
-          margin-top: 28px;
-        }
-
-        .seo-blog-page .result p {
-          color: #d1d5db;
-          line-height: 1.8;
-          margin-top: 12px;
-        }
-
-        .seo-blog-page .result ul {
-          margin-top: 12px;
-          padding-left: 20px;
-        }
-
-        .seo-blog-page .result li {
-          margin-bottom: 8px;
-          color: #d1d5db;
-        }
-
         @media (max-width: 900px) {
-          .seo-blog-page .row {
+          .row {
             grid-template-columns: 1fr;
           }
         }
