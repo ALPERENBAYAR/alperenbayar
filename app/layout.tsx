@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "../components/Navbar";
+import ConditionalNavbar from "../components/ConditionalNavbar";
 import CursorGlow from "../components/CursorGlow";
 
 export const metadata: Metadata = {
@@ -71,7 +71,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
+        <ConditionalNavbar />
         <CursorGlow />
         <div className="relative z-[1]">{children}</div>
       </body>
