@@ -664,7 +664,7 @@ export default function MerveGame() {
         <button
           type="button"
           onClick={() => restartRef.current()}
-          className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition hover:border-white/40 hover:bg-white/20"
+          className="min-h-[44px] touch-manipulation rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 transition hover:border-white/40 hover:bg-white/20"
         >
           Yeniden Başlat
         </button>
