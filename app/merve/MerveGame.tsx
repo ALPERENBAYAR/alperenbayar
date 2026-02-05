@@ -37,7 +37,7 @@ export default function MerveGame() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const deviceScale = window.devicePixelRatio || 1;
+    const deviceScale = Math.min(window.devicePixelRatio || 1, 1.5);
 
     const state = {
       phase: "waiting" as Phase,
@@ -164,7 +164,8 @@ export default function MerveGame() {
       };
 
       ctx.fillStyle = colors.heart;
-      for (let i = 0; i < 22; i += 1) {
+      const heartCount = width < 480 ? 10 : 22;
+      for (let i = 0; i < heartCount; i += 1) {
         const x = (i * 70 + (state.cameraX * 0.2) % 70) % width;
         const y = height * 0.2 + (i % 5) * 22;
         heart(x + 10, y + 8, 1.2);
