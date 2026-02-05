@@ -621,6 +621,16 @@ export default function MerveGame() {
       state.phase = "turning";
     };
 
+    const handleTouchStart = (event: TouchEvent) => {
+      event.preventDefault();
+      handlePointerDown();
+    };
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      event.preventDefault();
+      handlePointerUp();
+    };
+
     updateCanvasSize();
     loadMerveImage();
     resetGame();
@@ -628,11 +638,15 @@ export default function MerveGame() {
 
     canvas.addEventListener("pointerdown", handlePointerDown);
     window.addEventListener("pointerup", handlePointerUp);
+    canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: false });
     window.addEventListener("resize", updateCanvasSize);
 
     return () => {
       canvas.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("pointerup", handlePointerUp);
+      canvas.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("resize", updateCanvasSize);
     };
   }, []);
@@ -656,7 +670,7 @@ export default function MerveGame() {
       </div>
       <canvas
         ref={canvasRef}
-        className="h-[420px] w-full select-none rounded-2xl border border-white/10 bg-black/20"
+        className="h-[420px] w-full select-none rounded-2xl border border-white/10 bg-black/20 touch-none"
       />
       <div className="mt-4 flex flex-col gap-2 text-sm text-white/70">
         <p>Basılı tut: köprü uzar. Bırak: düşür.</p>
