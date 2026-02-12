@@ -640,14 +640,14 @@ export default function MerveGame() {
     canvas.addEventListener("pointerdown", handlePointerDown);
     window.addEventListener("pointerup", handlePointerUp);
     canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
-    window.addEventListener("touchend", handleTouchEnd, { passive: false });
+    canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
     window.addEventListener("resize", updateCanvasSize);
 
     return () => {
       canvas.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("pointerup", handlePointerUp);
       canvas.removeEventListener("touchstart", handleTouchStart);
-      window.removeEventListener("touchend", handleTouchEnd);
+      canvas.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("resize", updateCanvasSize);
     };
   }, []);
