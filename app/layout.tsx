@@ -49,6 +49,9 @@ export const metadata: Metadata = {
       "SEO, reklam optimizasyonu ve yazılım otomasyonlarıyla ölçeklenebilir çözümler.",
     images: ["/images/alperen.jpg"],
   },
+  other: {
+    "msvalidate.01": "09B7CCD86BC1EC6157366DF6C341DE86",
+  },
 };
 
 const geistSans = Geist({
