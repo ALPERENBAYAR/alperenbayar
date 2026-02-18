@@ -68,7 +68,7 @@ export default function BacklinkBulmaPage() {
         <div className="card">
           <div className="header">
             <p className="badge">AI Tools</p>
-            <h1>SEO Tavsiyeleri</h1>
+            <h1>NODEDM SEO TAVSİYELERİ</h1>
             <p className="subtitle">
               Websiteni gir, n8n arka planda SEO tavsiyelerini hazirlasin.
             </p>
