@@ -15,6 +15,7 @@ type BacklinkResponse = {
   backlinks?: SeoAdvice[];
   total?: number;
   raw?: string;
+  report?: string;
   error?: string;
 };
 
@@ -59,6 +60,7 @@ export default function BacklinkBulmaPage() {
 
   const advices = result?.backlinks || [];
   const hasAdvices = advices.length > 0;
+  const report = result?.report?.trim();
 
   return (
     <div className="backlink-page">
@@ -103,6 +105,13 @@ export default function BacklinkBulmaPage() {
                 </p>
               </div>
 
+              {report && (
+                <div className="report">
+                  <p className="label">Rapor</p>
+                  <pre className="raw">{report}</pre>
+                </div>
+              )}
+
               {hasAdvices && (
                 <ul className="list">
                   {advices.map((item, index) => (
@@ -135,7 +144,7 @@ export default function BacklinkBulmaPage() {
                 </ul>
               )}
 
-              {!hasAdvices && result.raw && (
+              {!hasAdvices && !report && result.raw && (
                 <pre className="raw">{result.raw}</pre>
               )}
             </div>
