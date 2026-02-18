@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-type Backlink = {
+type SeoAdvice = {
   url?: string;
   source?: string;
   target?: string;
@@ -12,7 +12,7 @@ type Backlink = {
 };
 
 type BacklinkResponse = {
-  backlinks?: Backlink[];
+  backlinks?: SeoAdvice[];
   total?: number;
   raw?: string;
   error?: string;
@@ -57,8 +57,8 @@ export default function BacklinkBulmaPage() {
     }
   }
 
-  const backlinks = result?.backlinks || [];
-  const hasBacklinks = backlinks.length > 0;
+  const advices = result?.backlinks || [];
+  const hasAdvices = advices.length > 0;
 
   return (
     <div className="backlink-page">
@@ -66,9 +66,9 @@ export default function BacklinkBulmaPage() {
         <div className="card">
           <div className="header">
             <p className="badge">AI Tools</p>
-            <h1>Backlink Bulma</h1>
+            <h1>SEO Tavsiyeleri</h1>
             <p className="subtitle">
-              Websiteni gir, n8n arka planda backlinkleri bulsun.
+              Websiteni gir, n8n arka planda SEO tavsiyelerini hazirlasin.
             </p>
           </div>
 
@@ -84,7 +84,7 @@ export default function BacklinkBulmaPage() {
             />
 
             <button onClick={handleSubmit} disabled={loading}>
-              {loading ? "Araniyor..." : "Backlinkleri Getir"}
+              {loading ? "Hazirlaniyor..." : "Tavsiyeleri Getir"}
             </button>
 
             {error && <div className="error">{error}</div>}
@@ -93,49 +93,49 @@ export default function BacklinkBulmaPage() {
           {result && (
             <div className="result">
               <div className="result-header">
-                <h2>Sonuclar</h2>
+                <h2>SEO Tavsiyeleri</h2>
                 <p>
                   {result.total
-                    ? `${result.total} adet backlink`
-                    : hasBacklinks
-                    ? `${backlinks.length} adet backlink`
-                    : "Backlink bulunamadi"}
+                    ? `${result.total} adet tavsiye`
+                    : hasAdvices
+                    ? `${advices.length} adet tavsiye`
+                    : "Tavsiye bulunamadi"}
                 </p>
               </div>
 
-              {hasBacklinks && (
+              {hasAdvices && (
                 <ul className="list">
-                  {backlinks.map((item, index) => (
+                  {advices.map((item, index) => (
                     <li key={`${item.url || item.source || "row"}-${index}`}>
                       <div className="row">
                         <div>
-                          <p className="label">Kaynak</p>
-                          <p className="value">{item.source || item.url || "-"}</p>
+                          <p className="label">Konu / URL</p>
+                          <p className="value">{item.url || item.source || "-"}</p>
                         </div>
                         <div>
-                          <p className="label">Hedef</p>
+                          <p className="label">Hedef Sayfa</p>
                           <p className="value">{item.target || "-"}</p>
                         </div>
                       </div>
                       <div className="row">
                         <div>
-                          <p className="label">Baslik</p>
+                          <p className="label">Tavsiye</p>
                           <p className="value">{item.title || "-"}</p>
                         </div>
                         <div>
-                          <p className="label">Anchor</p>
+                          <p className="label">Etki / Not</p>
                           <p className="value">{item.anchor || "-"}</p>
                         </div>
                       </div>
                       {item.first_seen && (
-                        <p className="meta">Ilk gorulme: {item.first_seen}</p>
+                        <p className="meta">Tarih: {item.first_seen}</p>
                       )}
                     </li>
                   ))}
                 </ul>
               )}
 
-              {!hasBacklinks && result.raw && (
+              {!hasAdvices && result.raw && (
                 <pre className="raw">{result.raw}</pre>
               )}
             </div>
